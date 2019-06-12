@@ -1,4 +1,4 @@
-package controller
+package controllers
 
 import (
 	"fmt"
@@ -30,7 +30,7 @@ func init() {
 	// get a Collection of todo
 	todosCollection = session.DB("test-todo").C("todo")
 }
-func createTodo(context *gin.Context) {
+func CreateTodo(context *gin.Context) {
 	title := context.PostForm("Title")
 	completed, _ := strconv.ParseBool(context.PostForm("Completed"))
 	var todo = Todo{bson.NewObjectId(), title, completed}
@@ -46,7 +46,7 @@ func createTodo(context *gin.Context) {
 	})
 }
 
-func fetchAllTodo(context *gin.Context) {
+func FetchAllTodo(context *gin.Context) {
 	var todos []Todo
 	err := todosCollection.Find(nil).All(&todos)
 	if err != nil {
@@ -67,7 +67,7 @@ func fetchAllTodo(context *gin.Context) {
 	})
 }
 
-func fetchSingleTodo(context *gin.Context) {
+func FetchSingleTodo(context *gin.Context) {
 	todo := Todo{}
 	id := bson.ObjectIdHex(context.Param("id"))
 	err := todosCollection.FindId(id).One(&todo)
@@ -87,7 +87,7 @@ func fetchSingleTodo(context *gin.Context) {
 	})
 }
 
-func updateTodo(context *gin.Context) {
+func UpdateTodo(context *gin.Context) {
 	id := bson.ObjectIdHex(context.Param("id"))
 	title := context.PostForm("title")
 	completed, _ := strconv.ParseBool(context.PostForm("completed"))
@@ -111,7 +111,7 @@ func updateTodo(context *gin.Context) {
 	})
 }
 
-func deleteTodo(context *gin.Context) {
+func DeleteTodo(context *gin.Context) {
 	id := bson.ObjectIdHex(context.Param("id"))
 
 	fmt.Printf("id: %v", id)
