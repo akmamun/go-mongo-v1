@@ -5,17 +5,11 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"github.com/go-mongo/models"
 )
-
-type Todo struct {
-	ID        bson.ObjectId `bson:"_id,omitempty"`
-	Title     string
-	Completed bool
-}
 
 var todosCollection *mgo.Collection
 var session *mgo.Session
@@ -30,10 +24,11 @@ func init() {
 	// get a Collection of todo
 	todosCollection = session.DB("test-todo").C("todo")
 }
+ 
 func CreateTodo(context *gin.Context) {
 	title := context.PostForm("Title")
 	completed, _ := strconv.ParseBool(context.PostForm("Completed"))
-	var todo = Todo{bson.NewObjectId(), title, completed}
+	var todo = models.Todo{bson.NewObjectId(), title, completed}
 	fmt.Println("" + todo.Title + " completed: " + strconv.FormatBool(todo.Completed))
 	err := todosCollection.Insert(&todo)
 	if err != nil {
@@ -47,7 +42,7 @@ func CreateTodo(context *gin.Context) {
 }
 
 func FetchAllTodo(context *gin.Context) {
-	var todos []Todo
+	var todos []models.Todo
 	err := todosCollection.Find(nil).All(&todos)
 	if err != nil {
 		log.Fatal(err)
@@ -68,11 +63,11 @@ func FetchAllTodo(context *gin.Context) {
 }
 
 func FetchSingleTodo(context *gin.Context) {
-	todo := Todo{}
+	todo := models.Todo{}
 	id := bson.ObjectIdHex(context.Param("id"))
 	err := todosCollection.FindId(id).One(&todo)
 
-	if err != nil || todo == (Todo{}) {
+	if err != nil || todo == (models.Todo{}) {
 		fmt.Println("Error: " + err.Error())
 		context.JSON(http.StatusNotFound, gin.H{
 			"status":  http.StatusNotFound,

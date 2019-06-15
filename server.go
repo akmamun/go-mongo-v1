@@ -2,8 +2,10 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/go-mongo/controllers"
 	"gopkg.in/mgo.v2"
+	"github.com/go-mongo/controllers"
+
+
 )
 
 var todosCollection *mgo.Collection
